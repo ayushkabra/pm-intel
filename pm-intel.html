@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PM Intel — Your Product Intelligence Layer</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #F5F2ED;
+    --surface: #EDEAE4;
+    --surface2: #E4E0D8;
+    --ink: #1A1814;
+    --ink2: #6B6760;
+    --ink3: #A8A49E;
+    --accent: #C84B2F;
+    --accent2: #E8A87C;
+    --border: rgba(26,24,20,0.1);
+    --border2: rgba(26,24,20,0.2);
+    --radius: 6px;
+    --radius-lg: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Geist', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    border-bottom: 0.5px solid var(--border2);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-logo span { color: var(--accent); font-style: italic; }
+
+  .nav-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 3px;
+    border: 0.5px solid var(--border);
+  }
+
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 5px 14px;
+    border-radius: 4px;
+    border: none;
+    background: none;
+    color: var(--ink2);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+
+  .nav-tab.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .nav-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink3);
+    letter-spacing: 0.05em;
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  /* PAGE SECTIONS */
+  .page { display: none; animation: fadeUp 0.25s ease; }
+  .page.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION HEADER */
+  .section-head {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-head h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .section-head h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .section-head p {
+    font-size: 14px;
+    color: var(--ink2);
+    font-weight: 300;
+  }
+
+  /* FORM ELEMENTS */
+  .form-group { margin-bottom: 1.25rem; }
+
+  .form-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink3);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  input[type="text"], textarea, select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius);
+    font-family: 'Geist', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  input[type="text"]:focus, textarea:focus {
+    border-color: var(--ink);
+    background: var(--surface2);
+  }
+
+  input[type="text"]::placeholder, textarea::placeholder {
+    color: var(--ink3);
+  }
+
+  textarea { resize: none; height: 80px; }
+
+  /* CHECKBOXES */
+  .check-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .check-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    background: var(--surface);
+    border: 0.5px solid var(--border2);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .check-pill:has(input:checked) {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .check-pill input { display: none; }
+
+  .check-pill span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+  }
+
+  /* TAGS */
+  .tag-area {
+    background: var(--surface);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    min-height: 48px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 99px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    animation: popIn 0.15s ease;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .tag-x {
+    background: none;
+    border: none;
+    color: rgba(245,242,237,0.6);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .tag-input {
+    border: none;
+    background: none;
+    outline: none;
+    font-family: 'Geist', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    flex: 1;
+    min-width: 120px;
+    padding: 0;
+  }
+
+  .tag-input::placeholder { color: var(--ink3); }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 0.5px solid var(--border);
+    margin: 1.75rem 0;
+  }
+
+  /* RUN BAR */
+  .run-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .run-status {
+    font-size: 13px;
+    color: var(--ink3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .btn-run {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Geist', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+
+  .btn-run:hover { opacity: 0.85; }
+  .btn-run:active { transform: scale(0.98); }
+  .btn-run:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-run .arrow { font-size: 16px; }
+
+  /* RESULTS */
+  .results { margin-top: 2.5rem; }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .results-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink3);
+    text-transform: uppercase;
+  }
+
+  .results-clear {
+    font-size: 11px;
+    color: var(--ink3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* RESULT CARDS */
+  .result-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 0.75rem;
+    animation: fadeUp 0.2s ease;
+  }
+
+  .result-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .result-card-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .result-badge {
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .badge-news { background: #E8F4E8; color: #2A6B2A; }
+  .badge-product { background: #E8EEFF; color: #2A3D8B; }
+  .badge-social { background: #FEF3E8; color: #8B4A15; }
+  .badge-market { background: #F3E8FE; color: #5B2A8B; }
+  .badge-feature { background: #E8FEFE; color: #1A6B6B; }
+  .badge-risk { background: #FEE8E8; color: #8B2A2A; }
+  .badge-opportunity { background: #E8FEF0; color: #1A6B40; }
+
+  .result-card p {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* LOADING */
+  .loading-state {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 1rem;
+  }
+
+  .loading-dots span {
+    width: 5px;
+    height: 5px;
+    background: var(--ink3);
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
+  }
+
+  .loading-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink3);
+    letter-spacing: 0.05em;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    border: 0.5px dashed var(--border2);
+    border-radius: var(--radius-lg);
+  }
+
+  .empty-state p {
+    font-size: 14px;
+    color: var(--ink3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* HOMEPAGE */
+  .home-hero {
+    padding: 4rem 0 3rem;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  .home-hero h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 52px;
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .home-hero h1 em { color: var(--accent); font-style: italic; }
+
+  .home-hero p {
+    font-size: 16px;
+    color: var(--ink2);
+    max-width: 480px;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .home-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .home-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .home-card:hover {
+    border-color: var(--ink);
+    background: var(--surface2);
+    transform: translateY(-2px);
+  }
+
+  .home-card-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    color: var(--ink3);
+    margin-bottom: 8px;
+  }
+
+  .home-card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .home-card p {
+    font-size: 12px;
+    color: var(--ink2);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .home-card-arrow {
+    margin-top: 1rem;
+    font-size: 18px;
+    color: var(--ink3);
+  }
+
+  /* ERROR */
+  .error-card {
+    background: #FEE8E8;
+    border: 0.5px solid #F0BABA;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    font-size: 13px;
+    color: #8B2A2A;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    nav { padding: 1rem; }
+    main { padding: 2rem 1rem 5rem; }
+    .home-cards { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .home-hero h1 { font-size: 36px; }
+    .nav-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">pm<span>intel</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goTo('home')">Home</button>
+    <button class="nav-tab" onclick="goTo('competitive')">Competitive</button>
+    <button class="nav-tab" onclick="goTo('market')">Market</button>
+    <button class="nav-tab" onclick="goTo('feature')">Feature</button>
+  </div>
+  <div class="nav-tag">for product managers</div>
+</nav>
+
+<main>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="home-hero">
+      <h1>Your intelligence<br>layer, <em>simplified.</em></h1>
+      <p>One tool for competitive research, market analysis, and feature benchmarking. Built for PMs who want signal, not noise.</p>
+    </div>
+    <div class="home-cards">
+      <div class="home-card" onclick="goTo('competitive')">
+        <div class="home-card-num">01</div>
+        <h3>Competitive study</h3>
+        <p>Track funding, product moves, social buzz, and job signals for any competitor.</p>
+        <div class="home-card-arrow">→</div>
+      </div>
+      <div class="home-card" onclick="goTo('market')">
+        <div class="home-card-num">02</div>
+        <h3>Market analysis</h3>
+        <p>Understand market size, segments, trends and opportunities for any space.</p>
+        <div class="home-card-arrow">→</div>
+      </div>
+      <div class="home-card" onclick="goTo('feature')">
+        <div class="home-card-num">03</div>
+        <h3>Feature study</h3>
+        <p>Benchmark how a specific feature is built across products. Find the gaps.</p>
+        <div class="home-card-arrow">→</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPETITIVE STUDY -->
+  <div class="page" id="page-competitive">
+    <div class="section-head">
+      <h1>Competitive <em>study</em></h1>
+      <p>Enter your company and competitors to get a real-time intelligence digest.</p>
+    </div>
+
+    <div class="two-col">
+      <div class="form-group">
+        <label class="form-label">Your company</label>
+        <input type="text" id="c-company" placeholder="e.g. Notion" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Industry</label>
+        <input type="text" id="c-industry" placeholder="e.g. Productivity SaaS" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Competitors — press Enter to add</label>
+      <div class="tag-area" id="c-tag-area">
+        <input class="tag-input" id="c-tag-input" placeholder="Type competitor name and press Enter..." onkeydown="handleTag(event,'c')" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">What to track</label>
+      <div class="check-grid">
+        <label class="check-pill"><input type="checkbox" id="tr-funding" checked><span>Funding & news</span></label>
+        <label class="check-pill"><input type="checkbox" id="tr-product" checked><span>Product updates</span></label>
+        <label class="check-pill"><input type="checkbox" id="tr-reddit" checked><span>Reddit & social</span></label>
+        <label class="check-pill"><input type="checkbox" id="tr-youtube"><span>YouTube</span></label>
+        <label class="check-pill"><input type="checkbox" id="tr-jobs"><span>Job listings</span></label>
+        <label class="check-pill"><input type="checkbox" id="tr-pricing"><span>Pricing changes</span></label>
+      </div>
+    </div>
+
+    <div class="run-bar">
+      <span class="run-status" id="c-status">Ready when you are</span>
+      <button class="btn-run" id="c-btn" onclick="runCompetitive()">
+        Run analysis <span class="arrow">→</span>
+      </button>
+    </div>
+
+    <div class="results" id="c-results"></div>
+  </div>
+
+  <!-- MARKET ANALYSIS -->
+  <div class="page" id="page-market">
+    <div class="section-head">
+      <h1>Market <em>analysis</em></h1>
+      <p>Get a structured market read on any company, product, or industry.</p>
+    </div>
+
+    <div class="two-col">
+      <div class="form-group">
+        <label class="form-label">Company or product</label>
+        <input type="text" id="m-company" placeholder="e.g. Figma" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Industry / category</label>
+        <input type="text" id="m-industry" placeholder="e.g. Design tools, SaaS" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Your specific question</label>
+      <textarea id="m-question" placeholder="e.g. What is the TAM for design tools in Southeast Asia? Who are the key customer segments and what are they underserved on?"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Geography focus (optional)</label>
+      <input type="text" id="m-geo" placeholder="e.g. India, Southeast Asia, Global" />
+    </div>
+
+    <div class="run-bar">
+      <span class="run-status" id="m-status">Ready when you are</span>
+      <button class="btn-run" id="m-btn" onclick="runMarket()">
+        Analyze market <span class="arrow">→</span>
+      </button>
+    </div>
+
+    <div class="results" id="m-results"></div>
+  </div>
+
+  <!-- FEATURE STUDY -->
+  <div class="page" id="page-feature">
+    <div class="section-head">
+      <h1>Feature <em>study</em></h1>
+      <p>Benchmark how a specific feature is implemented across products. Find the gaps.</p>
+    </div>
+
+    <div class="two-col">
+      <div class="form-group">
+        <label class="form-label">Feature to study</label>
+        <input type="text" id="f-feature" placeholder="e.g. AI search, onboarding, pricing page" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your product context</label>
+        <input type="text" id="f-context" placeholder="e.g. We're building a PM tool" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Companies to benchmark — press Enter to add</label>
+      <div class="tag-area" id="f-tag-area">
+        <input class="tag-input" id="f-tag-input" placeholder="Type company name and press Enter..." onkeydown="handleTag(event,'f')" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">What aspect to focus on</label>
+      <div class="check-grid">
+        <label class="check-pill"><input type="checkbox" id="fa-ux" checked><span>UX & design</span></label>
+        <label class="check-pill"><input type="checkbox" id="fa-reception" checked><span>User reception</span></label>
+        <label class="check-pill"><input type="checkbox" id="fa-tech"><span>Technical approach</span></label>
+        <label class="check-pill"><input type="checkbox" id="fa-gaps" checked><span>Gaps & opportunities</span></label>
+        <label class="check-pill"><input type="checkbox" id="fa-pricing"><span>Pricing & access</span></label>
+      </div>
+    </div>
+
+    <div class="run-bar">
+      <span class="run-status" id="f-status">Ready when you are</span>
+      <button class="btn-run" id="f-btn" onclick="runFeature()">
+        Study feature <span class="arrow">→</span>
+      </button>
+    </div>
+
+    <div class="results" id="f-results"></div>
+  </div>
+
+</main>
+
+<script>
+  const tagStore = { c: [], f: [] };
+
+  function goTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    const tabs = ['home','competitive','market','feature'];
+    document.querySelectorAll('.nav-tab')[tabs.indexOf(page)].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function handleTag(e, type) {
+    if (e.key === 'Enter') {
+      const inp = document.getElementById(type + '-tag-input');
+      const val = inp.value.trim();
+      if (val && !tagStore[type].includes(val)) {
+        tagStore[type].push(val);
+        renderTags(type);
+      }
+      inp.value = '';
+    }
+  }
+
+  function renderTags(type) {
+    const area = document.getElementById(type + '-tag-area');
+    const inp = document.getElementById(type + '-tag-input');
+    area.innerHTML = '';
+    tagStore[type].forEach((t, i) => {
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.innerHTML = `${t}<button class="tag-x" onclick="removeTag('${type}',${i})">×</button>`;
+      area.appendChild(tag);
+    });
+    area.appendChild(inp);
+    inp.focus();
+  }
+
+  function removeTag(type, i) {
+    tagStore[type].splice(i, 1);
+    renderTags(type);
+  }
+
+  function showLoading(id) {
+    document.getElementById(id).innerHTML = `
+      <div class="loading-state">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+        <div class="loading-text">Searching the web for insights...</div>
+      </div>`;
+  }
+
+  function setStatus(id, text) {
+    document.getElementById(id).textContent = text;
+  }
+
+  function setBtn(id, disabled) {
+    const btn = document.getElementById(id);
+    btn.disabled = disabled;
+    btn.textContent = disabled ? 'Running...' : btn.dataset.label || btn.textContent;
+  }
+
+  function badgeFor(heading) {
+    const h = heading.toLowerCase();
+    if (h.includes('fund') || h.includes('news') || h.includes('announc')) return 'badge-news';
+    if (h.includes('product') || h.includes('launch') || h.includes('feature') || h.includes('update')) return 'badge-product';
+    if (h.includes('reddit') || h.includes('social') || h.includes('community') || h.includes('sentiment')) return 'badge-social';
+    if (h.includes('market') || h.includes('segment') || h.includes('trend') || h.includes('tam') || h.includes('growth')) return 'badge-market';
+    if (h.includes('gap') || h.includes('opportunit')) return 'badge-opportunity';
+    if (h.includes('risk') || h.includes('threat') || h.includes('challenge') || h.includes('weakness')) return 'badge-risk';
+    return 'badge-feature';
+  }
+
+  function renderResults(containerId, text) {
+    const el = document.getElementById(containerId);
+    const blocks = text.split(/\n(?=#{1,3} |\*\*[A-Z][^*]+\*\*)/g).map(b => b.trim()).filter(Boolean);
+
+    if (!blocks.length) {
+      el.innerHTML = `<div class="result-card"><p>${text.replace(/\n/g,'<br>')}</p></div>`;
+      return;
+    }
+
+    let html = `<div class="results-header"><span class="results-label">Results</span><button class="results-clear" onclick="document.getElementById('${containerId}').innerHTML=''">Clear</button></div>`;
+
+    blocks.forEach(block => {
+      const lines = block.split('\n');
+      const raw = lines[0].replace(/^#+\s*|\*\*/g, '').trim();
+      const body = lines.slice(1).join('\n').replace(/\*\*/g, '').trim();
+      if (!raw) return;
+      const badge = badgeFor(raw);
+      html += `<div class="result-card">
+        <div class="result-card-head">
+          <div class="result-card-title">${raw}</div>
+          <span class="result-badge ${badge}">${badge.replace('badge-','')}</span>
+        </div>
+        <p>${(body || raw).replace(/\n/g,'<br>')}</p>
+      </div>`;
+    });
+
+    el.innerHTML = html;
+  }
+
+  async function callClaude(prompt, statusId, resultsId, btnId) {
+    setStatus(statusId, 'Running search...');
+    document.getElementById(btnId).disabled = true;
+    document.getElementById(btnId).textContent = 'Running...';
+    showLoading(resultsId);
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        document.getElementById(resultsId).innerHTML = `<div class="error-card">API error: ${data.error.message}</div>`;
+        setStatus(statusId, 'Error — check console');
+      } else {
+        const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+        renderResults(resultsId, text || 'No results returned.');
+        setStatus(statusId, 'Done — ' + new Date().toLocaleTimeString());
+      }
+    } catch (err) {
+      document.getElementById(resultsId).innerHTML = `<div class="error-card">Something went wrong: ${err.message}</div>`;
+      setStatus(statusId, 'Error');
+    } finally {
+      const btn = document.getElementById(btnId);
+      btn.disabled = false;
+      btn.innerHTML = btn.dataset.label + ' <span class="arrow">→</span>';
+    }
+  }
+
+  document.getElementById('c-btn').dataset.label = 'Run analysis';
+  document.getElementById('m-btn').dataset.label = 'Analyze market';
+  document.getElementById('f-btn').dataset.label = 'Study feature';
+
+  function runCompetitive() {
+    const company = document.getElementById('c-company').value.trim();
+    const industry = document.getElementById('c-industry').value.trim();
+    if (!company || tagStore.c.length === 0) {
+      setStatus('c-status', 'Add your company and at least one competitor');
+      return;
+    }
+    const tracking = [
+      document.getElementById('tr-funding').checked && 'funding & recent news',
+      document.getElementById('tr-product').checked && 'product updates & launches',
+      document.getElementById('tr-reddit').checked && 'Reddit & social media sentiment',
+      document.getElementById('tr-youtube').checked && 'YouTube videos & reviews',
+      document.getElementById('tr-jobs').checked && 'job listings & hiring signals',
+      document.getElementById('tr-pricing').checked && 'pricing changes',
+    ].filter(Boolean).join(', ');
+
+    const prompt = `You are a senior competitive intelligence analyst for a product manager at ${company}${industry ? ' (' + industry + ')' : ''}.
+
+Research these competitors: ${tagStore.c.join(', ')}.
+
+Focus on: ${tracking}.
+
+Use web search to find the most recent and relevant information. For each competitor, provide specific, actionable insights. Structure your response with a clear heading per insight (e.g. "## Notion — New AI features", "## Funding round — Linear raises $35M"). Keep each section to 3-5 focused sentences with concrete details and dates where available.
+
+Prioritize recency. Flag anything from the last 30 days especially.`;
+
+    callClaude(prompt, 'c-status', 'c-results', 'c-btn');
+  }
+
+  function runMarket() {
+    const company = document.getElementById('m-company').value.trim();
+    const question = document.getElementById('m-question').value.trim();
+    const industry = document.getElementById('m-industry').value.trim();
+    const geo = document.getElementById('m-geo').value.trim();
+    if (!company || !question) {
+      setStatus('m-status', 'Fill in company name and your question');
+      return;
+    }
+
+    const prompt = `You are a market research analyst. A product manager needs market intelligence on ${company}${industry ? ' in the ' + industry + ' space' : ''}.
+
+Geography focus: ${geo || 'Global'}.
+
+Their question: ${question}
+
+Search the web for current data. Structure your response with clear section headings:
+## Market overview — size, growth rate, key numbers
+## Key customer segments — who buys, why, what they need
+## Market trends — what's shifting right now
+## Key players — who dominates and why
+## Opportunities — underserved areas, gaps
+## Risks — what could go wrong
+
+Be specific. Use real numbers, recent reports, and concrete examples. Avoid vague generalities.`;
+
+    callClaude(prompt, 'm-status', 'm-results', 'm-btn');
+  }
+
+  function runFeature() {
+    const feature = document.getElementById('f-feature').value.trim();
+    const context = document.getElementById('f-context').value.trim();
+    if (!feature || tagStore.f.length === 0) {
+      setStatus('f-status', 'Add the feature and at least one company');
+      return;
+    }
+    const focus = [
+      document.getElementById('fa-ux').checked && 'UX & design approach',
+      document.getElementById('fa-reception').checked && 'user reception & reviews',
+      document.getElementById('fa-tech').checked && 'technical implementation',
+      document.getElementById('fa-gaps').checked && 'gaps & unmet needs',
+      document.getElementById('fa-pricing').checked && 'pricing & access model',
+    ].filter(Boolean).join(', ');
+
+    const prompt = `You are a product analyst helping a PM benchmark a specific feature across companies.
+
+Feature to study: "${feature}"
+PM context: ${context || 'Building a new product'}
+Companies to benchmark: ${tagStore.f.join(', ')}
+Focus areas: ${focus}
+
+Search the web for how each company implements this feature. For each, provide a dedicated section with heading "## [Company] — ${feature}". Include: what the feature does, how users describe it (reviews, Reddit, App Store), recent changes, and what's missing.
+
+End with a final section: "## Gaps & opportunities" — a synthesis of what none of them do well and what a PM could build to stand out.
+
+Be specific, practical, and opinionated. This is not a summary — it's competitive intelligence.`;
+
+    callClaude(prompt, 'f-status', 'f-results', 'f-btn');
+  }
+</script>
+</body>
+</html>
