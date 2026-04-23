@@ -128,6 +128,13 @@ main {
   font-weight: 300;
 }
 
+.section-head-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
 /* FORM ELEMENTS */
 .form-group { margin-bottom: 1.25rem; }
 
@@ -238,7 +245,8 @@ textarea { resize: none; height: 80px; }
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
-  padding: 0;
+  padding: 2px 4px;
+  margin-left: 2px;
 }
 
 .tag-input {
@@ -311,6 +319,8 @@ textarea { resize: none; height: 80px; }
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .results-label {
@@ -523,12 +533,18 @@ textarea { resize: none; height: 80px; }
 
 /* RESPONSIVE */
 @media (max-width: 640px) {
-  nav { padding: 1rem; }
+  nav { padding: 1rem; flex-wrap: wrap; gap: 1rem; justify-content: space-between; }
+  .nav-tabs { width: 100%; display: flex; overflow-x: auto; justify-content: flex-start; }
+  .nav-tab { white-space: nowrap; }
   main { padding: 2rem 1rem 5rem; }
   .home-cards { grid-template-columns: 1fr; }
   .two-col { grid-template-columns: 1fr; }
   .home-hero h1 { font-size: 36px; }
   .nav-tag { display: none; }
+  .section-head-flex { flex-direction: column; align-items: stretch; gap: 1rem; }
+  .run-bar { flex-direction: column; align-items: stretch; gap: 1rem; text-align: center; }
+  .run-status { order: 2; }
+  .btn-run { order: 1; justify-content: center; }
 }
 
 .auth-card {

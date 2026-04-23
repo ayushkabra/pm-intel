@@ -189,9 +189,42 @@ export default function AuthPage() {
             </div>
           )}
 
-          <button type="submit" className="btn-run" style={{ width: '100%', justifyContent: 'center' }} disabled={loading}>
+          <button type="submit" className="btn-run" style={{ width: '100%', justifyContent: 'center', marginBottom: '1rem' }} disabled={loading}>
             {loading ? 'Processing...' : isRecovery ? 'Update Password' : isForgotPassword ? 'Send Reset Link' : isMagicLink ? 'Send Magic Link' : isLogin ? 'Sign In' : 'Sign Up'} <span className="arrow">→</span>
           </button>
+          
+          {(!isForgotPassword && !isMagicLink && !isRecovery) && (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', margin: '1rem 0', color: 'var(--ink3)' }}>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border2)' }}></div>
+                <span style={{ padding: '0 10px', fontSize: '12px', fontFamily: 'DM Mono, monospace' }}>OR</span>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border2)' }}></div>
+              </div>
+              
+              <button 
+                type="button" 
+                onClick={async () => {
+                  await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: { 
+                      // Use the full current path (including /pm-intel/ if on github pages)
+                      redirectTo: window.location.origin + window.location.pathname 
+                    }
+                  });
+                }}
+                className="nav-tab" 
+                style={{ width: '100%', justifyContent: 'center', background: 'white', border: '1px solid var(--border2)', color: 'var(--ink)', padding: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.88 16.83 15.71 17.61V20.34H19.28C21.36 18.42 22.56 15.6 22.56 12.25Z" fill="#4285F4"/>
+                  <path d="M12 23C14.97 23 17.46 22.02 19.28 20.34L15.71 17.61C14.73 18.27 13.48 18.66 12 18.66C9.14 18.66 6.71 16.73 5.84 14.15H2.15V17C4.01 20.69 7.74 23 12 23Z" fill="#34A853"/>
+                  <path d="M5.84 14.15C5.62 13.49 5.49 12.76 5.49 12C5.49 11.24 5.62 10.51 5.84 9.85V7H2.15C1.38 8.54 0.94 10.22 0.94 12C0.94 13.78 1.38 15.46 2.15 17L5.84 14.15Z" fill="#FBBC05"/>
+                  <path d="M12 5.34C13.62 5.34 15.08 5.9 16.22 6.99L19.35 3.86C17.45 2.09 14.97 1 12 1C7.74 1 4.01 3.31 2.15 7L5.84 9.85C6.71 7.27 9.14 5.34 12 5.34Z" fill="#EA4335"/>
+                </svg>
+                Continue with Google
+              </button>
+            </>
+          )}
         </form>
 
         {!isRecovery && (

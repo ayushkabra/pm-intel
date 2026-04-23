@@ -146,7 +146,7 @@ Crucially: Limit your research to events that happened in the ${timeframe}. Filt
 
   return (
     <div className="page active">
-      <div className="section-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div className="section-head section-head-flex">
         <div>
           <h1>Competitive <em>study</em></h1>
           <p>Enter your company and competitors to get a real-time intelligence digest.</p>
